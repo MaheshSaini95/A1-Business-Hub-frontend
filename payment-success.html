@@ -3,231 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Processing | A1 BUSINESS HUB</title>
+    <title>Payment Successful | A1 Business Hub</title>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .payment-container {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .success-container {
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 2rem;
             text-align: center;
-            max-width: 500px;
-            width: 100%;
-            animation: slideUp 0.5s ease;
-        }
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .spinner {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #667eea;
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 2rem;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
         .success-icon {
-            display: none;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #48bb78;
+            font-size: 5rem;
+            animation: bounce 1s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .success-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .referral-code-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            font-size: 3rem;
-            line-height: 80px;
-            margin: 0 auto 2rem;
-            animation: scaleIn 0.5s ease;
-        }
-        .error-icon {
-            display: none;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #f56565;
-            color: white;
-            font-size: 3rem;
-            line-height: 80px;
-            margin: 0 auto 2rem;
-            animation: scaleIn 0.5s ease;
-        }
-        @keyframes scaleIn {
-            from {
-                transform: scale(0);
-            }
-            to {
-                transform: scale(1);
-            }
-        }
-        h2 {
-            color: #2d3748;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-        p {
-            color: #718096;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-        .status-message {
-            margin-top: 2rem;
             padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .referral-code-box:hover {
+            transform: scale(1.05);
+        }
+        .btn-dashboard {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
             border-radius: 10px;
-            display: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
         }
-        .status-message.show {
-            display: block;
-        }
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .redirect-text {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: #a0aec0;
+        .error-message {
+            color: #ef4444;
+            padding: 1rem;
+            background: #fee2e2;
+            border-radius: 8px;
+            margin: 1rem 0;
         }
     </style>
 </head>
 <body>
-    <div class="payment-container">
-        <div class="spinner" id="spinner"></div>
-        <div class="success-icon" id="successIcon">✓</div>
-        <div class="error-icon" id="errorIcon">✗</div>
-        
-        <h2 id="title">🔐 Verifying Payment...</h2>
-        <p id="message">Please wait while we confirm your payment securely.</p>
-        
-        <div id="statusMessage" class="status-message"></div>
-        <p class="redirect-text" id="redirectText"></p>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <h1>Payment Successful!</h1>
+            <p id="statusMessage">Verifying your payment...</p>
+            
+            <div id="successDetails" style="display: none;">
+                <p>✅ Your account is now active!</p>
+                <p>✅ Welcome bonus credited: ₹<span id="bonusAmount">50</span></p>
+                
+                <div class="referral-code-box" id="referralCodeBox" onclick="copyReferralCode()">
+                    <small>Your Referral Code</small><br>
+                    <span id="referralCode">Loading...</span>
+                </div>
+                
+                <p style="color: #718096;">Click code to copy • Share with friends to earn!</p>
+                
+                <a href="dashboard.html" class="btn-dashboard">
+                    Go to Dashboard →
+                </a>
+            </div>
+
+            <div id="errorDetails" style="display: none;">
+                <div class="error-message">
+                    <p id="errorMessage"></p>
+                </div>
+                <a href="dashboard.html" class="btn-dashboard">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
     </div>
 
     <script>
         const API_URL = "https://a1-business-hub.onrender.com/api";
-
-        // Get order ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('order_id');
-        const token = localStorage.getItem('token');
-
-        console.log('=== Payment Verification Started ===');
-        console.log('Order ID:', orderId);
-        console.log('Token exists:', !!token);
-        console.log('Full URL:', window.location.href);
-
-        // Validate inputs
-        if (!orderId) {
-            showError('Invalid payment session. Order ID not found.');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 3000);
-        } else if (!token) {
-            showError('Session expired. Please login again.');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 3000);
-        } else {
-            // Start verification
-            verifyPayment();
-        }
+        const token = localStorage.getItem("token");
 
         async function verifyPayment() {
             try {
-                // Wait 3 seconds for Cashfree to process
-                console.log('Waiting 3 seconds for payment processing...');
-                await new Promise(resolve => setTimeout(resolve, 3000));
+                const urlParams = new URLSearchParams(window.location.search);
+                const orderId = urlParams.get("order_id");
 
-                console.log('Sending verification request...');
-                
+                console.log("Order ID:", orderId);
+                console.log("Token:", token ? "Present" : "Missing");
+
+                if (!orderId) {
+                    throw new Error("Order ID not found in URL");
+                }
+
+                if (!token) {
+                    throw new Error("Please login first");
+                }
+
+                // Show loading
+                document.getElementById("statusMessage").textContent = "Verifying payment...";
+
                 const response = await fetch(`${API_URL}/payment/verify-payment`, {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ orderId })
+                    body: JSON.stringify({ orderId }),
                 });
 
-                console.log('Response status:', response.status);
-                const data = await response.json();
-                console.log('Response data:', data);
+                console.log("Response status:", response.status);
 
-                if (response.ok && data.success) {
-                    showSuccess(`🎉 Payment Successful!\n\n₹${data.welcomeBonus} welcome bonus credited to your wallet!\n\nYour account is now activated.`);
-                    
-                    setTimeout(() => {
-                        console.log('Redirecting to dashboard...');
-                        window.location.href = 'dashboard.html';
-                    }, 3000);
-                } else {
-                    throw new Error(data.error || data.details || 'Payment verification failed');
+                const data = await response.json();
+                console.log("Response data:", data);
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Verification failed");
+                }
+
+                // Show success details
+                document.getElementById("statusMessage").style.display = "none";
+                document.getElementById("successDetails").style.display = "block";
+                document.getElementById("referralCode").textContent = data.referralCode || "N/A";
+                document.getElementById("bonusAmount").textContent = data.welcomeBonus || 50;
+
+                // Store referral code
+                if (data.referralCode) {
+                    localStorage.setItem("referralCode", data.referralCode);
                 }
 
             } catch (error) {
-                console.error('Verification error:', error);
-                showError('Payment verification failed: ' + error.message + '\n\nRedirecting to dashboard...');
+                console.error("Verification error:", error);
                 
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 4000);
+                document.getElementById("statusMessage").style.display = "none";
+                document.getElementById("errorDetails").style.display = "block";
+                document.getElementById("errorMessage").textContent = error.message;
             }
         }
 
-        function showSuccess(message) {
-            document.getElementById('spinner').style.display = 'none';
-            document.getElementById('successIcon').style.display = 'block';
-            document.getElementById('title').textContent = '✅ Payment Successful!';
-            document.getElementById('message').textContent = '';
+        function copyReferralCode() {
+            const code = document.getElementById("referralCode").textContent;
             
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.className = 'status-message success show';
-            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
-            
-            document.getElementById('redirectText').textContent = 'Redirecting to dashboard in 3 seconds...';
+            // Modern clipboard API
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    const box = document.getElementById("referralCodeBox");
+                    const originalHTML = box.innerHTML;
+                    box.innerHTML = '<small>✓ Copied!</small><br>' + code;
+                    box.style.background = "#48bb78";
+                    setTimeout(() => {
+                        box.innerHTML = originalHTML;
+                        box.style.background = "linear-gradient(135deg, #667eea, #764ba2)";
+                    }, 2000);
+                });
+            } else {
+                // Fallback
+                alert("Referral code: " + code);
+            }
         }
 
-        function showError(message) {
-            document.getElementById('spinner').style.display = 'none';
-            document.getElementById('errorIcon').style.display = 'block';
-            document.getElementById('title').textContent = '❌ Verification Error';
-            document.getElementById('message').textContent = '';
-            
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.className = 'status-message error show';
-            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
-            
-            document.getElementById('redirectText').textContent = 'You will be redirected shortly...';
+        // Start verification
+        if (token) {
+            verifyPayment();
+        } else {
+            document.getElementById("statusMessage").style.display = "none";
+            document.getElementById("errorDetails").style.display = "block";
+            document.getElementById("errorMessage").textContent = "Please login first";
         }
     </script>
 </body>
