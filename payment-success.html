@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing | A1 BUSINESS HUB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .payment-container {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #667eea;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-icon {
+            display: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #48bb78;
+            color: white;
+            font-size: 3rem;
+            line-height: 80px;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease;
+        }
+        .error-icon {
+            display: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f56565;
+            color: white;
+            font-size: 3rem;
+            line-height: 80px;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease;
+        }
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        h2 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        p {
+            color: #718096;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .status-message {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            display: none;
+        }
+        .status-message.show {
+            display: block;
+        }
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .redirect-text {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="spinner" id="spinner"></div>
+        <div class="success-icon" id="successIcon">✓</div>
+        <div class="error-icon" id="errorIcon">✗</div>
+        
+        <h2 id="title">🔐 Verifying Payment...</h2>
+        <p id="message">Please wait while we confirm your payment securely.</p>
+        
+        <div id="statusMessage" class="status-message"></div>
+        <p class="redirect-text" id="redirectText"></p>
+    </div>
+
+    <script>
+        const API_URL = "https://a1-business-hub.onrender.com/api";
+
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+        const token = localStorage.getItem('token');
+
+        console.log('=== Payment Verification Started ===');
+        console.log('Order ID:', orderId);
+        console.log('Token exists:', !!token);
+        console.log('Full URL:', window.location.href);
+
+        // Validate inputs
+        if (!orderId) {
+            showError('Invalid payment session. Order ID not found.');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
+        } else if (!token) {
+            showError('Session expired. Please login again.');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
+        } else {
+            // Start verification
+            verifyPayment();
+        }
+
+        async function verifyPayment() {
+            try {
+                // Wait 3 seconds for Cashfree to process
+                console.log('Waiting 3 seconds for payment processing...');
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                console.log('Sending verification request...');
+                
+                const response = await fetch(`${API_URL}/payment/verify-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ orderId })
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (response.ok && data.success) {
+                    showSuccess(`🎉 Payment Successful!\n\n₹${data.welcomeBonus} welcome bonus credited to your wallet!\n\nYour account is now activated.`);
+                    
+                    setTimeout(() => {
+                        console.log('Redirecting to dashboard...');
+                        window.location.href = 'dashboard.html';
+                    }, 3000);
+                } else {
+                    throw new Error(data.error || data.details || 'Payment verification failed');
+                }
+
+            } catch (error) {
+                console.error('Verification error:', error);
+                showError('Payment verification failed: ' + error.message + '\n\nRedirecting to dashboard...');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 4000);
+            }
+        }
+
+        function showSuccess(message) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('successIcon').style.display = 'block';
+            document.getElementById('title').textContent = '✅ Payment Successful!';
+            document.getElementById('message').textContent = '';
+            
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = 'status-message success show';
+            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            
+            document.getElementById('redirectText').textContent = 'Redirecting to dashboard in 3 seconds...';
+        }
+
+        function showError(message) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('errorIcon').style.display = 'block';
+            document.getElementById('title').textContent = '❌ Verification Error';
+            document.getElementById('message').textContent = '';
+            
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = 'status-message error show';
+            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            
+            document.getElementById('redirectText').textContent = 'You will be redirected shortly...';
+        }
+    </script>
+</body>
+</html>

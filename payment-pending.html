@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment | A1 BUSINESS HUB</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <h1>💳 Complete Your Payment</h1>
+            <p class="subtitle">Activate your account to start earning</p>
+            
+            <div style="background: #f7fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #2d3748; margin-bottom: 1rem;">Payment Details</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <span>Joining Fee:</span>
+                    <strong>₹250</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <span>Welcome Bonus:</span>
+                    <strong style="color: #48bb78;">+ ₹50</strong>
+                </div>
+                <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem;">
+                    <strong>Total to Pay:</strong>
+                    <strong style="color: #667eea;">₹250</strong>
+                </div>
+            </div>
+
+            <button onclick="initiatePayment()" class="btn-primary" id="payBtn">
+                Pay ₹250 Now
+            </button>
+
+            <p class="footer-text">
+                <a href="dashboard.html">← Back to Dashboard</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <script>
+        const API_URL = "https://a1-business-hub.onrender.com/api";
+
+        async function initiatePayment() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const payBtn = document.getElementById('payBtn');
+            payBtn.disabled = true;
+            payBtn.textContent = 'Creating order...';
+
+            try {
+                // Create order
+                const response = await fetch(`${API_URL}/payment/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to create order');
+                }
+
+                console.log('Order created:', data);
+
+                // Initialize Cashfree
+                const cashfree = Cashfree({
+                    mode: 'sandbox' // Change to 'production' for live
+                });
+
+                // Open checkout
+                const checkoutOptions = {
+                    paymentSessionId: data.paymentSessionId,
+                    returnUrl: `${window.location.origin}/vk-marketing-frontend/payment-success.html?order_id=${data.orderId}`,
+                    redirectTarget: "_self"
+                };
+
+                cashfree.checkout(checkoutOptions);
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                alert('Failed to initiate payment: ' + error.message);
+                payBtn.disabled = false;
+                payBtn.textContent = 'Pay ₹250 Now';
+            }
+        }
+    </script>
+</body>
+</html>

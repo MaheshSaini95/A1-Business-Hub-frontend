@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard | A1 BUSINESS HUB</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Payment Alert (shown only for inactive users) -->
+    <div id="paymentAlert" class="payment-alert" style="display: none;">
+        <div class="alert-content">
+            <span class="alert-icon">⚠️</span>
+            <span class="alert-text">Account Inactive! Complete payment to activate and earn.</span>
+            <button onclick="window.location.href='payment-pending.html'" class="alert-btn">Pay Now</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-brand">MLM Dashboard</div>
+        <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="referral.html">Referrals</a></li>
+            <li><a href="wallet.html">Wallet</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome, <span id="userName">Loading...</span>!</h1>
+            <p class="referral-code-display">
+                Referral Code: <strong id="referralCode" onclick="copyReferralCode()">---</strong>
+            </p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <p class="stat-label">Wallet Balance</p>
+                    <h2 class="stat-value">₹<span id="walletBalance">0.00</span></h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-info">
+                    <p class="stat-label">Total Earnings</p>
+                    <h2 class="stat-value">₹<span id="totalEarnings">0.00</span></h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <p class="stat-label">Direct Referrals</p>
+                    <h2 class="stat-value"><span id="directReferrals">0</span></h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-info">
+                    <p class="stat-label">Total Team</p>
+                    <h2 class="stat-value"><span id="totalTeam">0</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Recent Commissions</h2>
+            <div id="commissionsList">
+                <p style="text-align: center; padding: 2rem;">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

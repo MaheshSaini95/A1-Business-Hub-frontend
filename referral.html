@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referrals - A1 BUSINESS HUB</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>A1 BUSINESS HUB Dashboard</h2>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="referral.html">Referrals</a>
+                <a href="wallet.html">Wallet</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>Your Referral Link</h1>
+        
+        <div class="referral-card">
+            <p><strong>Referral Code:</strong> <span id="refCode"></span></p>
+            <div class="referral-link-box">
+                <input type="text" id="referralLink" readonly>
+                <button onclick="copyLink()" class="btn-secondary">Copy</button>
+            </div>
+            <button onclick="shareLink()" class="btn-primary">Share via WhatsApp</button>
+        </div>
+        
+        <div class="section">
+            <h2>Your Team</h2>
+            <div class="level-tabs">
+                <button onclick="loadTeam('all')" class="tab-btn active">All</button>
+                <button onclick="loadTeam(1)" class="tab-btn">Level 1</button>
+                <button onclick="loadTeam(2)" class="tab-btn">Level 2</button>
+                <button onclick="loadTeam(3)" class="tab-btn">Level 3</button>
+            </div>
+            <div id="teamList">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/referral.js"></script>
+</body>
+</html>

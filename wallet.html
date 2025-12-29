@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - A1 BUSINESS HUB</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h2>A1 BUSINESS HUB Dashboard</h2>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="referral.html">Referrals</a>
+                <a href="wallet.html">Wallet</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1>Wallet</h1>
+        
+        <div class="wallet-balance-card">
+            <h2>Available Balance</h2>
+            <p class="balance-amount">₹<span id="walletBalance">0</span></p>
+        </div>
+        
+        <div class="withdrawal-form-card">
+            <h2>Request Withdrawal</h2>
+            <p class="note">Minimum withdrawal: ₹500</p>
+            
+            <form id="withdrawalForm">
+                <div class="form-group">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="amount" required min="500" placeholder="Enter amount">
+                </div>
+                
+                <div class="form-group">
+                    <label>Account Holder Name</label>
+                    <input type="text" id="accountHolder" required placeholder="As per bank">
+                </div>
+                
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" id="accountNumber" required placeholder="Enter account number">
+                </div>
+                
+                <div class="form-group">
+                    <label>IFSC Code</label>
+                    <input type="text" id="ifsc" required placeholder="Enter IFSC code">
+                </div>
+                
+                <div class="form-group">
+                    <label>Bank Name</label>
+                    <input type="text" id="bankName" required placeholder="Enter bank name">
+                </div>
+                
+                <button type="submit" class="btn-primary">Request Withdrawal</button>
+            </form>
+        </div>
+        
+        <div class="section">
+            <h2>Withdrawal History</h2>
+            <div id="withdrawalHistory">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/wallet.js"></script>
+</body>
+</html>
